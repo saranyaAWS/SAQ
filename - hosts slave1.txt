@@ -1,0 +1,37 @@
+- hosts: slave1
+  become: yes
+  tasks:
+    - name: Install apache2
+      apt:
+        name: apache2
+        state: present
+
+
+
+
+- hosts: slave1
+  become: yes
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Configure Nginx to listen on port 8080
+      lineinfile:
+        path: /etc/nginx/sites-available/default
+        regexp: 'listen 80;'
+        line: 'listen 8080;'
+        state: present
+
+    - name: Allow traffic on port 8080 (UFW)
+      ufw:
+        rule: allow
+        port: 8080
+        proto: tcp
+
+    - name: Restart Nginx to apply changes
+      service:
+        name: nginx
+        state: restarted
