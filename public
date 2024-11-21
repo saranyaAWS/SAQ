@@ -1,0 +1,14 @@
+FROM ubuntu:latest
+
+# Update package list and install Apache
+RUN apt-get update && \
+    apt-get -y install apache2
+
+# Copy content to the Apache web directory
+ADD . /var/www/html
+
+# Set environment variable
+ENV name="DevOps login 360"
+
+# Start Apache in the foreground
+CMD ["apachectl", "-D", "FOREGROUND"]
